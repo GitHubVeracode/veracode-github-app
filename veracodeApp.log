@@ -1,0 +1,7 @@
+[32MINFO[39M: 2023-09-13T10:24:31.369Z: Installation created event triggered
+[32MINFO[39M: 2023-09-13T10:24:31.371Z: App installed successfully on veraakarthikbharadwaj-org
+[32MINFO[39M: 2023-09-13T10:24:31.372Z: Cloning veracode from GitHubVeracode under veraakarthikbharadwaj-org Github account.
+[32MINFO[39M: 2023-09-13T10:24:33.429Z: veracode repository forked successfully on veraakarthikbharadwaj-org account
+[32MINFO[39M: 2023-09-13T10:31:49.436Z: Push event triggered
+[32MINFO[39M: 2023-09-13T10:31:49.438Z: Received push event for veracode repository of the a-karthik-bharadwaj-org account
+[33MWARN[39M: 2023-09-13T10:31:49.438Z: Skipping processing due to excluded repository : 

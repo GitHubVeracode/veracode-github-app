@@ -1,0 +1,108 @@
+const { Probot, ProbotOctokit, Context } = require("probot");
+const fs = require("fs");
+const path = require("path");
+
+const { handleRegister } = require('../src/services/register');
+const privateKey = fs.readFileSync(
+    path.join(__dirname, "fixtures/mock-cert.pem"),
+    "utf-8"
+  );
+
+describe('register test', () => {
+    let app;
+    let context;
+    let token;
+    beforeEach(async () => {
+        app = new Probot({
+            appId: 123,
+            privateKey,
+            // disable request throttling and retries for testing
+            Octokit: ProbotOctokit.defaults({
+              retry: { enabled: false },
+              throttle: { enabled: false },
+            }),
+          });
+          token = 'secret42';
+          context = new Context({}, {}, {});
+          
+          context.octokit.apps = {
+            createInstallationAccessToken: jest.fn().mockImplementation(async () => ({ data: { token } })),
+            getRepoInstallation: jest.fn().mockImplementation(async () => ({
+                status: 200,
+                url: 'https://api.github.com/repos/GitHubVeracode/example-javascript/installation',
+                data: {
+                  id: 40679745,
+                  account: {
+                    login: 'GitHubVeracode',
+                    id: 138351620,
+                    node_id: 'O_kgDOCD8UBA',
+                    avatar_url: 'https://avatars.githubusercontent.com/u/138351620?v=4',
+                    gravatar_id: '',
+                    url: 'https://api.github.com/users/GitHubVeracode',
+                    html_url: 'https://github.com/GitHubVeracode',
+                    followers_url: 'https://api.github.com/users/GitHubVeracode/followers',
+                    following_url: 'https://api.github.com/users/GitHubVeracode/following{/other_user}',
+                    gists_url: 'https://api.github.com/users/GitHubVeracode/gists{/gist_id}',
+                    starred_url: 'https://api.github.com/users/GitHubVeracode/starred{/owner}{/repo}',
+                    subscriptions_url: 'https://api.github.com/users/GitHubVeracode/subscriptions',
+                    organizations_url: 'https://api.github.com/users/GitHubVeracode/orgs',
+                    repos_url: 'https://api.github.com/users/GitHubVeracode/repos',
+                    events_url: 'https://api.github.com/users/GitHubVeracode/events{/privacy}',
+                    received_events_url: 'https://api.github.com/users/GitHubVeracode/received_events',
+                    type: 'Organization',
+                    site_admin: false
+                  },
+                  repository_selection: 'all',
+                  access_tokens_url: 'https://api.github.com/app/installations/40679745/access_tokens',
+                  repositories_url: 'https://api.github.com/installation/repositories',
+                  html_url: 'https://github.com/organizations/GitHubVeracode/settings/installations/40679745',
+                  app_id: 375350,
+                  app_slug: 'veracode-probot-app-qa',
+                  target_id: 138351620,
+                  target_type: 'Organization',
+                  permissions: {
+                    checks: 'write',
+                    issues: 'write',
+                    actions: 'write',
+                    contents: 'write',
+                    metadata: 'read',
+                    pull_requests: 'write',
+                    administration: 'write'
+                  },
+                  events: [
+                    'issues',
+                    'pull_request',
+                    'pull_request_review',
+                    'push',
+                    'repository',
+                    'workflow_run'
+                  ],
+                  created_at: '2023-08-13T17:32:29.000Z',
+                  updated_at: '2023-08-13T17:33:15.000Z',
+                  single_file_name: null,
+                  has_multiple_single_files: false,
+                  single_file_paths: [],
+                  suspended_by: null,
+                  suspended_at: null
+                }
+              }))
+          };
+    });
+
+    test('register test', async () => {
+        const req = {
+            query: {
+                run_id:"5874605291",
+                sha:"5e7ee47b1b00bd7ead082ecd7db32e90ad8c0d4a",
+                branch:"master",
+                event_type:"veracode-sast-policy-scan",
+                repository_owner:"GitHubVeracode",
+                repository_name:"example-javascript",
+                enforce:"true",
+                enforce_admin:"false",
+                name:"Veracode Static Code Analysis"
+            }
+        }
+        handleRegister(req, {}, {app});
+    })
+})

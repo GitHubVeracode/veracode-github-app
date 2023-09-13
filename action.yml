@@ -1,0 +1,61 @@
+name: 'Organization workflow action'
+description: 'Action to register organization workflow'
+branding:
+  icon: 'check-circle'
+  color: 'white'
+inputs:
+  owner: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  repo: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  name: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  head_sha: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  status: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  github_token: 
+    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    required: true
+  event_type:
+    description: 'event_type triggered by the GitHub App (provided by GitHub app via `github.event.client_payload.event_type`)'
+    required: true
+runs:
+  using: "composite"
+  steps: 
+    # Create check run
+    - name: GitHub API Request to create a check
+      uses: octokit/request-action@v2.x
+      id: create_check_run
+      with:
+        route: POST /repos/{owner}/{repo}/check-runs
+        owner: ${{ inputs.owner }}
+        repo: ${{ inputs.repo }}
+        name: ${{ inputs.name }}
+        head_sha: ${{ inputs.head_sha }}
+        status: ${{ inputs.status }}
+        output: | # The | is significant!
+          title: Test check run title
+          summary: A summary of the test check run
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+    - name: Create metadata
+      id: create-metadata-json
+      run: |
+        echo '{
+          "check_run_type": "${{ inputs.event_type }}",
+          "repository_name": "${{ inputs.repo }}",
+          "check_run_id": ${{ fromJson(steps.create_check_run.outputs.data).id }}
+        }' > workflow-metadata.json
+      shell: bash
+    - name: Save metadata
+      uses: actions/upload-artifact@v3
+      with:
+        name: workflow-metadata
+        path: workflow-metadata.json
+  
