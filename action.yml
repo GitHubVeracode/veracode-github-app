@@ -1,5 +1,7 @@
 name: 'Organization workflow action'
 description: 'Action to register organization workflow'
+permissions:
+  checks: write
 branding:
   icon: 'check-circle'
   color: 'white'
