@@ -36,16 +36,16 @@ runs:
       id: create_check_run
       with:
         route: POST /repos/{owner}/{repo}/check-runs
-        owner: ${{ inputs.owner }}
-        repo: ${{ inputs.repo }}
-        name: ${{ inputs.name }}
         head_sha: ${{ inputs.head_sha }}
-        status: ${{ inputs.status }}
         output: | # The | is significant!
           title: Test check run title
           summary: A summary of the test check run
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
+        INPUT_OWNER: ${{ inputs.owner }}
+        INPUT_REPO: ${{ inputs.repo }}
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_STATUS: ${{ inputs.status }}
     - name: Create metadata
       id: create-metadata-json
       run: |
