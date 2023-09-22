@@ -7,22 +7,22 @@ branding:
   color: 'white'
 inputs:
   owner: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'Owner of the repo'
     required: true
   repo: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'Repository for the scan'
     required: true
   name: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'Name of the job being invoked'
     required: true
   head_sha: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'Head SHA'
     required: true
   status: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'Status of the check run'
     required: true
   github_token: 
-    description: 'ID of workflow run (provided via GitHub syntax `github.run_id`)'
+    description: 'GitHub Token to invoke the checks api'
     required: true
   event_type:
     description: 'event_type triggered by the GitHub App (provided by GitHub app via `github.event.client_payload.event_type`)'
