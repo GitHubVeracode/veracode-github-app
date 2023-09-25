@@ -4,6 +4,9 @@ branding:
   icon: 'check-circle'
   color: 'white'
 inputs:
+  run_id: 
+    description: 'run_id of original commit (provided by GitHub app via `github.event.client_payload.repository.owner`)'
+    required: true
   repositroy_owner: 
     description: 'repositroy_owner of original commit (provided by GitHub app via `github.event.client_payload.repository.owner`)'
     required: true
@@ -38,6 +41,7 @@ runs:
         repo: ${{ inputs.repositroy_name }}
         name: ${{ inputs.check_run_name }}
         head_sha: ${{ inputs.head_sha }}
+        run_id: ${{ inputs.run_id }}
         status: in_progress
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
