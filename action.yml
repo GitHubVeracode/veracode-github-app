@@ -41,7 +41,7 @@ runs:
         repo: ${{ inputs.repositroy_name }}
         name: ${{ inputs.check_run_name }}
         head_sha: ${{ inputs.head_sha }}
-        run_id: ${{ inputs.run_id }}
+        details_url: `https://github.com/GitHubVeracode/veracode/actions/runs/${inputs.run_id}`,
         status: in_progress
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
