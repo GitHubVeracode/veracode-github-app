@@ -39,7 +39,7 @@ runs:
         route: POST /repos/{owner}/{repo}/check-runs
         owner: ${{ inputs.repositroy_owner }}
         repo: ${{ inputs.repositroy_name }}
-        # name: "${{ inputs.check_run_name }}-${{ inputs.run_id }}"
+        name: "${{ inputs.check_run_name }}-${{ inputs.run_id }}"
         head_sha: ${{ inputs.head_sha }}
         status: in_progress
         details_url: "https://github.com/GitHubVeracode/veracode/actions/runs/${{ inputs.run_id }}"
