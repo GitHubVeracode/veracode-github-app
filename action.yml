@@ -48,10 +48,10 @@ runs:
           "check_run_type": "${{ inputs.event_type }}",
           "repository_name": "${{ inputs.repositroy_name }}",
           "check_run_id": ${{ fromJson(steps.create_check_run.outputs.data).id }}
-        }' > workflow-metadata.json
+        }' > "${{ fromJson(steps.create_check_run.outputs.data).id }}.json"
       shell: bash
     - name: Save metadata
       uses: actions/upload-artifact@v3
       with:
         name: workflow-metadata
-        path: workflow-metadata.json
+        path: "${{ fromJson(steps.create_check_run.outputs.data).id }}.json"
