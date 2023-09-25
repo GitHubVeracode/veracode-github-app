@@ -1,7 +1,5 @@
 name: 'Organization workflow action'
 description: 'Action to register organization workflow'
-permissions:
-  checks: write
 branding:
   icon: 'check-circle'
   color: 'white'
@@ -36,16 +34,13 @@ runs:
       id: create_check_run
       with:
         route: POST /repos/{owner}/{repo}/check-runs
+        owner: ${{ inputs.repositroy_owner }}
+        repo: ${{ inputs.repositroy_name }}
+        name: ${{ inputs.check_run_name }}
+        head_sha: ${{ inputs.head_sha }}
+        status: in_progress
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
-        INPUT_OWNER: ${{ inputs.repositroy_owner }}
-        INPUT_REPO: ${{ inputs.repositroy_name }}
-        INPUT_NAME: ${{ inputs.check_run_name }}
-        INPUT_STATUS: ${{ inputs.status }}
-        INPUT_HEAD_SHA: ${{ inputs.head_sha }}
-        INPUT_OUTPUT: | # The | is significant!
-          title: Test check run title
-          summary: A summary of the test check run
     - name: Create metadata
       id: create-metadata-json
       run: |
@@ -53,11 +48,10 @@ runs:
           "check_run_type": "${{ inputs.event_type }}",
           "repository_name": "${{ inputs.repositroy_name }}",
           "check_run_id": ${{ fromJson(steps.create_check_run.outputs.data).id }}
-        }' > workflow-metadata.json
+        }' > ${{ inputs.workflow_artifact_name }}
       shell: bash
     - name: Save metadata
       uses: actions/upload-artifact@v3
       with:
         name: workflow-metadata
-        path: workflow-metadata.json
-  
+        path: ${{ inputs.workflow_artifact_name }}
