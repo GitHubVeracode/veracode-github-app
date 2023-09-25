@@ -6,26 +6,26 @@ branding:
   icon: 'check-circle'
   color: 'white'
 inputs:
-  owner: 
-    description: 'Owner of the repo'
+repositroy_owner: 
+    description: 'repositroy_owner of original commit (provided by GitHub app via `github.event.client_payload.repository.owner`)'
     required: true
-  repo: 
-    description: 'Repository for the scan'
+  repositroy_name: 
+    description: 'repositroy_name of original commit (provided by GitHub app via `github.event.client_payload.repository.name`)'
     required: true
-  name: 
-    description: 'Name of the job being invoked'
+  check_run_name: 
+    description: 'Name of check (Use `github.workflow` to use the name of the workflow)'
     required: true
   head_sha: 
-    description: 'Head SHA'
-    required: true
-  status: 
-    description: 'Status of the check run'
+    description: 'head_sha of original commit (provided by GitHub app via `github.event.client_payload.sha`)'
     required: true
   github_token: 
-    description: 'GitHub Token to invoke the checks api'
+    description: 'github_token is a token (provided by GitHub app via `github.event.client_payload.token`)'
     required: true
   event_type:
     description: 'event_type triggered by the GitHub App (provided by GitHub app via `github.event.client_payload.event_type`)'
+    required: true
+  workflow_artifact_name:
+    description: 'workflow_artifact_name will be artifact name with .json extension which is uploaded under the Action'
     required: true
 runs:
   using: "composite"
@@ -38,9 +38,9 @@ runs:
         route: POST /repos/{owner}/{repo}/check-runs
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
-        INPUT_OWNER: ${{ inputs.owner }}
-        INPUT_REPO: ${{ inputs.repo }}
-        INPUT_NAME: ${{ inputs.name }}
+        INPUT_OWNER: ${{ inputs.repositroy_owner }}
+        INPUT_REPO: ${{ inputs.repositroy_name }}
+        INPUT_NAME: ${{ inputs.check_run_name }}
         INPUT_STATUS: ${{ inputs.status }}
         INPUT_HEAD_SHA: ${{ inputs.head_sha }}
         INPUT_OUTPUT: | # The | is significant!
@@ -51,7 +51,7 @@ runs:
       run: |
         echo '{
           "check_run_type": "${{ inputs.event_type }}",
-          "repository_name": "${{ inputs.repo }}",
+          "repository_name": "${{ inputs.repositroy_name }}",
           "check_run_id": ${{ fromJson(steps.create_check_run.outputs.data).id }}
         }' > workflow-metadata.json
       shell: bash
